@@ -15,24 +15,34 @@ RAWDRAWANDROID?=.
 RAWDRAWANDROIDSRCS=$(RAWDRAWANDROID)/android_native_app_glue.c
 SRC?=test.c
 
+# DEBUG or RELEASE
+BUILD?=DEBUG
+
 #We've tested it with android version 22, 24, 28, 29 and 30 and 32.
 #You can target something like Android 28, but if you set ANDROIDVERSION to say 22, then
 #Your app should (though not necessarily) support all the way back to Android 22. 
 ANDROIDVERSION?=30
 ANDROIDTARGET?=$(ANDROIDVERSION)
-CFLAGS?=-ffunction-sections -Os -fdata-sections -Wall -fvisibility=hidden
-LDFLAGS?=-Wl,--gc-sections -Wl,-Map=output.map -s
+CFLAGS?=-Wall
+LDFLAGS?=-Wl,--gc-sections -Wl,-Map=output.map
 ANDROID_FULLSCREEN?=y
 ADB?=adb
 UNAME := $(shell uname)
 
+CFLAGS_DEBUG=-g -O0 -Wextra -pedantic
+CFLAGS_RELEASE=-Os -ffunction-sections -fdata-sections
+LDFLAGS_RELEASE=
+
 # For really tight compiles....
-CFLAGS += -fvisibility=hidden
-LDFLAGS += -s
+CFLAGS_RELEASE += -fvisibility=hidden
+LDFLAGS_RELEASE += -s
 
 # For C++
 # LDFLAGS += -static-libstdc++
 # $(NDK)/toolchains/llvm/prebuilt/$(OS_NAME)/sysroot/usr/lib/aarch64-linux-android/libc.a
+
+CFLAGS += $(CFLAGS_$(BUILD))
+LDFLAGS += $(LDFLAGS_$(BUILD))
 
 ANDROID_FULLSCREEN?=y
 ADB?=adb
@@ -94,11 +104,17 @@ testsdk :
 	@echo "NDK:\t\t" $(NDK)
 	@echo "Build Tools:\t" $(BUILD_TOOLS)
 
-CFLAGS+=-Os -DANDROID -DAPPNAME=\"$(APPNAME)\"
+CFLAGS+=-DANDROID -DAPPNAME=\"$(APPNAME)\"
 ifeq (ANDROID_FULLSCREEN,y)
 CFLAGS +=-DANDROID_FULLSCREEN
 endif
-CFLAGS+= -I$(RAWDRAWANDROID)/rawdraw -I$(NDK)/sysroot/usr/include -I$(NDK)/sysroot/usr/include/android -I$(NDK)/toolchains/llvm/prebuilt/$(OS_NAME)/sysroot/usr/include -I$(NDK)/toolchains/llvm/prebuilt/$(OS_NAME)/sysroot/usr/include/android -fPIC -I$(RAWDRAWANDROID) -DANDROIDVERSION=$(ANDROIDVERSION)
+CFLAGS+= -fPIC \
+    -I$(RAWDRAWANDROID)/rawdraw \
+    -I$(NDK)/sysroot/usr/include \
+    -I$(NDK)/sysroot/usr/include/android \
+    -I$(NDK)/toolchains/llvm/prebuilt/$(OS_NAME)/sysroot/usr/include \
+    -I$(NDK)/toolchains/llvm/prebuilt/$(OS_NAME)/sysroot/usr/include/android \
+    -I$(RAWDRAWANDROID) -DANDROIDVERSION=$(ANDROIDVERSION)
 LDFLAGS += -lm -lGLESv3 -lEGL -landroid -llog -lOpenSLES
 LDFLAGS += -shared -uANativeActivity_onCreate
 
