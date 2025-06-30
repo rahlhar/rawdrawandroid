@@ -23,6 +23,7 @@ ANDROIDTARGET?=$(ANDROIDVERSION)
 CFLAGS?=-ffunction-sections -Os -fdata-sections -Wall -fvisibility=hidden
 LDFLAGS?=-Wl,--gc-sections -Wl,-Map=output.map -s
 ANDROID_FULLSCREEN?=y
+ANDROIDDEBUGGABLE?=true
 ADB?=adb
 UNAME := $(shell uname)
 
@@ -187,8 +188,9 @@ AndroidManifest.xml :
 	PACKAGENAME=$(PACKAGENAME) \
 		ANDROIDVERSION=22 \
 		ANDROIDTARGET=$(ANDROIDTARGET) \
+		ANDROIDDEBUGGABLE=$(ANDROIDDEBUGGABLE) \
 		APPNAME=$(APPNAME) \
-		LABEL=$(LABEL) envsubst '$$ANDROIDTARGET $$ANDROIDVERSION $$APPNAME $$PACKAGENAME $$LABEL' \
+		LABEL=$(LABEL) envsubst '$$ANDROIDTARGET $$ANDROIDVERSION $$ANDROIDDEBUGGABLE $$APPNAME $$PACKAGENAME $$LABEL' \
 		< AndroidManifest.xml.template > AndroidManifest.xml
 
 
