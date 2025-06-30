@@ -120,8 +120,8 @@ CFLAGS_ARM32:=-mfloat-abi=softfp -m32
 CFLAGS_x86:=-march=i686 -mssse3 -mfpmath=sse -m32
 CFLAGS_x86_64:=-march=x86-64 -msse4.2 -mpopcnt -m64
 STOREPASS?=password
-DNAME:="CN=example.com, OU=ID, O=Example, L=Doe, S=John, C=GB"
-KEYSTOREFILE:=my-release-key.keystore
+DNAME?="CN=example.com, OU=ID, O=Example, L=Doe, S=John, C=GB"
+KEYSTOREFILE?=my-release-key.keystore
 ALIASNAME?=standkey
 
 keystore : $(KEYSTOREFILE)
