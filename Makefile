@@ -126,7 +126,7 @@ ALIASNAME?=standkey
 keystore : $(KEYSTOREFILE)
 
 $(KEYSTOREFILE) :
-	keytool -genkey -v -keystore $(KEYSTOREFILE) -alias $(ALIASNAME) -keyalg RSA -keysize 2048 -validity 10000 -storepass $(STOREPASS) -keypass $(STOREPASS) -dname $(DNAME)
+	keytool -genkey -v -keystore $(KEYSTOREFILE) -alias $(ALIASNAME) -keyalg RSA -keysize 2048 -validity 10000 -storepass $(STOREPASS) -keypass $(STOREPASS) -dname $(DNAME) -storetype pkcs12
 
 folders:
 	mkdir -p makecapk/lib/arm64-v8a
