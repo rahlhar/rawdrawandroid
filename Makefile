@@ -168,23 +168,23 @@ makecapk.apk : $(TARGETS) $(EXTRA_ASSETS_TRIGGER) AndroidManifest.xml
 	rm -rf temp.apk
 	$(AAPT) package -f -F temp.apk -I $(ANDROID_JAR) -M AndroidManifest.xml -S Sources/res -A makecapk/assets -v --target-sdk-version $(ANDROIDTARGET)
 	unzip -o temp.apk -d makecapk
-	rm -rf makecapk.apk
+	rm -f makecapk.apk
 	# We use -4 here for the compression ratio, as it's a good balance of speed and size. -9 will make a slightly smaller executable but takes longer to build
 	cd makecapk && zip -D4r ../makecapk.apk . && zip -D0r ../makecapk.apk ./resources.arsc ./AndroidManifest.xml
 	# jarsigner is only necessary when targetting Android < 7.0
 	#jarsigner -sigalg SHA1withRSA -digestalg SHA1 -verbose -keystore $(KEYSTOREFILE) -storepass $(STOREPASS) makecapk.apk $(ALIASNAME)
-	rm -rf $(APKFILE)
+	rm -f $(APKFILE)
 	$(BUILD_TOOLS)/zipalign -v 4 makecapk.apk $(APKFILE)
 	#Using the apksigner in this way is only required on Android 30+
 	$(BUILD_TOOLS)/apksigner sign --key-pass pass:$(STOREPASS) --ks-pass pass:$(STOREPASS) --ks $(KEYSTOREFILE) $(APKFILE)
-	rm -rf temp.apk
-	rm -rf makecapk.apk
+	rm -f temp.apk
+	rm -f makecapk.apk
 	@ls -l $(APKFILE)
 
 manifest: AndroidManifest.xml
 
 AndroidManifest.xml :
-	rm -rf AndroidManifest.xml
+	rm -f AndroidManifest.xml
 	PACKAGENAME=$(PACKAGENAME) \
 		ANDROIDVERSION=$(ANDROIDVERSION) \
 		ANDROIDTARGET=$(ANDROIDTARGET) \
